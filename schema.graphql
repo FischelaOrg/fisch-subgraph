@@ -1,89 +1,79 @@
-type AmountReceived @entity(immutable: true) {
-  id: Bytes!
-  sender: Bytes! # address
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Loan @entity(immutable: true) {
+  id: ID!
+  loanId: BigInt
+  innitialLendAmount: BigInt
+  currentAvailableLendAmount: BigInt!
+  amountRepaid: BigInt
+  borrowerId: BigInt
+  interestRate: BigInt
+  loanOutDuration: BigInt
+  locked: Boolean
+  isActive: Boolean
+  lender: User
+  loanDurationInMonthCount: BigInt
 }
 
-type AmountSent @entity(immutable: true) {
-  id: Bytes!
-  to: Bytes! # address
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Borrow @entity(immutable: true) {
+  id: ID!
+  borrowerId: BigInt
+  borrower: User
+  innitialBorrowAmount: BigInt
+  currentBorrowAmount: BigInt
+  amountAlreadyRemitted: BigInt
+  deadline: BigInt
+  interest: BigInt
+  lenderId: BigInt
+  lender: User!
+  nftCollateralTokenId: BigInt
+  receiverAddress: User
+  isApproved: Boolean
+  isRepaid: Boolean
 }
 
-type AuctionCancelled @entity(immutable: true) {
-  id: Bytes!
-  auctionId: BigInt! # uint256
+type Asset @entity(immutable: true) {
+  id: ID!
   tokenId: BigInt! # uint256
-  seller: Bytes! # address
-  started: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  owner: User
+  title: String
+  description: String
+  tokenId: BigInt
+  price: BigInt
+  assetURI: String
+  revenue: BigInt
+  expenses: BigInt
+  traffic: BigInt
+  productLink: String
+  isFrozen: Boolean
+  ownerEmail: String
+  isCollateral: Boolean
 }
 
-type AuctionConfirmed @entity(immutable: true) {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  winner: Bytes! # address
-  settledPrice: BigInt! # uint256
-  confirmed: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Auction @entity(immutable: true) {
+  id: ID!
+  auctionId: BigInt!
+  tokenId: BigInt!
+  seller: User
+  startTime: BigInt
+  endTime: BigInt
+  reservePrice: BigInt
+  started: Boolean
+  resulted: Boolean
+  buyer: User
+  confirmed: Boolean
 }
 
-type AuctionCreated @entity(immutable: true) {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  tokenId: BigInt! # uint256
-  seller: Bytes! # address
-  startTime: BigInt! # uint256
-  endTime: BigInt! # uint256
-  reservePrice: BigInt! # uint256
-  started: Boolean! # bool
-  resulted: Boolean! # bool
-  buyer: Bytes! # address
-  confirmed: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Bid @entity(immutable: true) {
+  id: ID!
+  bid: BigInt
+  bidder: User
+  bidTime: BigInt
+  auctionId: BigInt
 }
 
-type AuctionEnded @entity(immutable: true) {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  winner: Bytes! # address
-  settledPrice: BigInt! # uint256
-  resulted: Boolean! # bool
-  started: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PlacedBid @entity(immutable: true) {
-  id: Bytes!
-  bidAmount: BigInt! # uint256
-  bidder: Bytes! # address
-  bidTime: BigInt! # uint256
-  auctionId: BigInt! # uint256
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type User @entity(immutable: true){
+  id: ID!
+  loans: [Loan!] @derivedFrom(field: "lender")
+  borrows: [Borrow!] @derivedFrom(field: "borrower")
+  assets: [Asset!] @derivedFrom(field: "owner")
+  bids: [Bid!] @derivedFrom(field: "bidder")
 }

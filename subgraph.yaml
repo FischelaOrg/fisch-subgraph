@@ -43,3 +43,85 @@ dataSources:
         - event: PlacedBid(uint256,address,uint256,uint256,uint256)
           handler: handlePlacedBid
       file: ./src/marketplace.ts
+  - kind: ethereum
+    name: fisch
+    network: mumbai
+    source:
+      address: "0x916aD713Feeb9ACadA68722b246c93b01dEBcca2"
+      abi: fisch
+      startBlock: 36629836
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - AssetPromotedToCollateral
+        - MintedNft
+        - fischOwnershipTransferred
+        - Transfer
+      abis:
+        - name: fisch
+          file: ./abis/fisch.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: AssetPromotedToCollateral(uint256,bool)
+          handler: handleAssetPromotedToCollateral
+        - event: MintedNft(address,string,string,uint256,uint256,string,uint256,uint256,uint256,string,bool,string,bool)
+          handler: handleMintedNft
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/fisch.ts
+  - kind: ethereum
+    name: loan
+    network: mumbai
+    source:
+      address: "0xf96066c652406793da5b6eF86d505c9f46078a5a"
+      abi: loan
+      startBlock:  36629896
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CollateralLiquidated
+        - FundsAdded
+        - LoanApproved
+        - LoanBorrowed
+        - LoanCancelled
+        - LoanCreated
+        - LoanLocked
+        - LoanRepayed
+        - LoanUnLocked
+        - loanOwnershipTransferred
+      abis:
+        - name: loan
+          file: ./abis/loan.json
+      eventHandlers:
+        - event: CollateralLiquidated(uint256,uint256,address,address,uint256,address,uint256,uint256,uint256,bool,uint256)
+          handler: handleCollateralLiquidated
+        - event: FundsAdded(uint256,uint256,address,uint256)
+          handler: handleFundsAdded
+        - event: LoanApproved(uint256,uint256,address,address,uint256,uint256,uint256,bool)
+          handler: handleLoanApproved
+        - event: LoanBorrowed(uint256,uint256,uint256,address,address,uint256,uint256,uint256,uint256,uint256,uint256,address,bool,bool)
+          handler: handleLoanBorrowed
+        - event: LoanCancelled(uint256,address,uint256,bool)
+          handler: handleLoanCancelled
+        - event: LoanCreated(uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,bool,address,uint256)
+          handler: handleLoanCreated
+        - event: LoanLocked(uint256,bool)
+          handler: handleLoanLocked
+        - event: LoanRepayed(uint256,uint256,address,address,uint256,uint256,uint256,uint256,uint256,bool)
+          handler: handleLoanRepayed
+        - event: LoanUnLocked(uint256,bool)
+          handler: handleLoanUnLocked
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/loan.ts

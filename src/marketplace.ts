@@ -7,146 +7,101 @@ import {
   AuctionEnded as AuctionEndedEvent,
   OwnershipTransferred as OwnershipTransferredEvent,
   PlacedBid as PlacedBidEvent
-} from "../generated/ marketplace/ marketplace"
+} from "../generated/marketplace/marketplace"
 import {
-  AmountReceived,
-  AmountSent,
-  AuctionCancelled,
-  AuctionConfirmed,
-  AuctionCreated,
-  AuctionEnded,
-  OwnershipTransferred,
-  PlacedBid
+  Auction,
+  Bid,
+  User,
 } from "../generated/schema"
 
 export function handleAmountReceived(event: AmountReceivedEvent): void {
-  let entity = new AmountReceived(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.sender = event.params.sender
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  
 }
 
 export function handleAmountSent(event: AmountSentEvent): void {
-  let entity = new AmountSent(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.to = event.params.to
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  
 }
 
 export function handleAuctionCancelled(event: AuctionCancelledEvent): void {
-  let entity = new AuctionCancelled(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.auctionId = event.params.auctionId
-  entity.tokenId = event.params.tokenId
-  entity.seller = event.params.seller
-  entity.started = event.params.started
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  let auction = Auction.load(event.params.auctionId.toHex())
+  if(auction){
+    auction.started = event.params.started
+    auction.save()
+  }
 }
 
 export function handleAuctionConfirmed(event: AuctionConfirmedEvent): void {
-  let entity = new AuctionConfirmed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.auctionId = event.params.auctionId
-  entity.winner = event.params.winner
-  entity.settledPrice = event.params.settledPrice
-  entity.confirmed = event.params.confirmed
+  let auction = Auction.load(event.params.auctionId.toHex())
+  if(auction){
+    auction.confirmed = event.params.confirmed
+    auction.save()
+  }
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  
 }
 
 export function handleAuctionCreated(event: AuctionCreatedEvent): void {
-  let entity = new AuctionCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.auctionId = event.params.auctionId
-  entity.tokenId = event.params.tokenId
-  entity.seller = event.params.seller
-  entity.startTime = event.params.startTime
-  entity.endTime = event.params.endTime
-  entity.reservePrice = event.params.reservePrice
-  entity.started = event.params.started
-  entity.resulted = event.params.resulted
-  entity.buyer = event.params.buyer
-  entity.confirmed = event.params.confirmed
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  let auction = Auction.load(event.params.auctionId.toHex())
 
-  entity.save()
+  if(!auction){
+    auction = new Auction(event.params.auctionId.toHex())
+    auction.auctionId = event.params.auctionId
+    auction.tokenId = event.params.tokenId
+    auction.seller = event.params.seller.toHexString()
+    auction.startTime = event.params.startTime
+    auction.endTime = event.params.endTime
+    auction.reservePrice = event.params.reservePrice
+    auction.started = event.params.started
+    auction.resulted = event.params.resulted
+    auction.buyer = event.params.buyer.toHexString()
+    auction.confirmed = event.params.confirmed
+    auction.save()
+  }
+
+  let user = User.load(event.transaction.from.toHexString())
+  if(!user){
+    user = new User(event.transaction.from.toHexString())
+    user.save()
+  }
+ 
 }
 
 export function handleAuctionEnded(event: AuctionEndedEvent): void {
-  let entity = new AuctionEnded(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.auctionId = event.params.auctionId
-  entity.winner = event.params.winner
-  entity.settledPrice = event.params.settledPrice
-  entity.resulted = event.params.resulted
-  entity.started = event.params.started
+  let auction = Auction.load(event.params.auctionId.toHex())
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+ if(auction){
+  auction.auctionId = event.params.auctionId
+  auction.buyer = event.params.winner.toHexString()
+  auction.reservePrice = event.params.settledPrice
+  auction.resulted = event.params.resulted
+  auction.started = event.params.started
+  auction.resulted = event.params.resulted
 
-  entity.save()
+  auction.save()
+ }
 }
 
 export function handleOwnershipTransferred(
   event: OwnershipTransferredEvent
 ): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  
 }
 
 export function handlePlacedBid(event: PlacedBidEvent): void {
-  let entity = new PlacedBid(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.bidAmount = event.params.bidAmount
-  entity.bidder = event.params.bidder
-  entity.bidTime = event.params.bidTime
-  entity.auctionId = event.params.auctionId
-  entity.tokenId = event.params.tokenId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  let bid = Bid.load(event.params.auctionId.toHex())
+  if(!bid){
+    bid = new Bid(event.params.auctionId.toHex())
+    bid.bid = event.params.bidAmount
+    bid.bidder = event.params.bidder.toHexString()
+    bid.bidTime = event.params.bidTime
+    bid.auctionId = event.params.auctionId
+    bid.save()
+  }
+  
+  let user = User.load(event.transaction.from.toHexString())
+  if(!user){
+    user = new User(event.transaction.from.toHexString())
+    user.save()
+  }
 }
