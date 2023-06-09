@@ -1,0 +1,45 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: marketplace
+    network: mumbai
+    source:
+      address: "0xd39fa85E38664eFD43ec1F7d5B2b71CD12DC6ce1"
+      abi: marketplace
+      startBlock: 36629854
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AmountReceived
+        - AmountSent
+        - AuctionCancelled
+        - AuctionConfirmed
+        - AuctionCreated
+        - AuctionEnded
+        - OwnershipTransferred
+        - PlacedBid
+      abis:
+        - name: marketplace
+          file: ./abis/ marketplace.json
+      eventHandlers:
+        - event: AmountReceived(address,uint256)
+          handler: handleAmountReceived
+        - event: AmountSent(indexed address,indexed uint256)
+          handler: handleAmountSent
+        - event: AuctionCancelled(uint256,uint256,address,bool)
+          handler: handleAuctionCancelled
+        - event: AuctionConfirmed(uint256,address,uint256,bool)
+          handler: handleAuctionConfirmed
+        - event: AuctionCreated(uint256,uint256,address,uint256,uint256,uint256,bool,bool,address,bool)
+          handler: handleAuctionCreated
+        - event: AuctionEnded(uint256,address,uint256,bool,bool)
+          handler: handleAuctionEnded
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PlacedBid(uint256,address,uint256,uint256,uint256)
+          handler: handlePlacedBid
+      file: ./src/marketplace.ts

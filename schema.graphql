@@ -1,0 +1,89 @@
+type AmountReceived @entity(immutable: true) {
+  id: Bytes!
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AmountSent @entity(immutable: true) {
+  id: Bytes!
+  to: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionCancelled @entity(immutable: true) {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  tokenId: BigInt! # uint256
+  seller: Bytes! # address
+  started: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionConfirmed @entity(immutable: true) {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  winner: Bytes! # address
+  settledPrice: BigInt! # uint256
+  confirmed: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionCreated @entity(immutable: true) {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  tokenId: BigInt! # uint256
+  seller: Bytes! # address
+  startTime: BigInt! # uint256
+  endTime: BigInt! # uint256
+  reservePrice: BigInt! # uint256
+  started: Boolean! # bool
+  resulted: Boolean! # bool
+  buyer: Bytes! # address
+  confirmed: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionEnded @entity(immutable: true) {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  winner: Bytes! # address
+  settledPrice: BigInt! # uint256
+  resulted: Boolean! # bool
+  started: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PlacedBid @entity(immutable: true) {
+  id: Bytes!
+  bidAmount: BigInt! # uint256
+  bidder: Bytes! # address
+  bidTime: BigInt! # uint256
+  auctionId: BigInt! # uint256
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
